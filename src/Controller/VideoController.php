@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/video')]
 class VideoController extends AbstractController
@@ -23,6 +24,7 @@ class VideoController extends AbstractController
     }
 
     #[Route('/new', name: 'app_video_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $video = new Video();
@@ -38,19 +40,24 @@ class VideoController extends AbstractController
 
         return $this->render('video/new.html.twig', [
             'video' => $video,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_video_show', methods: ['GET'])]
     public function show(Video $video): Response
     {
-        return $this->render('video/show.html.twig', [
-            'video' => $video,
-        ]);
+        if ($video->getType() === "premium" && $this->isGranted("ROLE_PREMIUM") || $video->getType() === "free" && $this->isGranted("ROLE_FREE")) {
+            return $this->render('video/show.html.twig', [
+                'video' => $video,
+            ]);
+        }
+        return $this->redirectToRoute('app_home');
+
     }
 
     #[Route('/{id}/edit', name: 'app_video_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Video $video, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(VideoType::class, $video);
@@ -64,11 +71,12 @@ class VideoController extends AbstractController
 
         return $this->render('video/edit.html.twig', [
             'video' => $video,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_video_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Video $video, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$video->getId(), $request->request->get('_token'))) {

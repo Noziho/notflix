@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Video;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,6 +16,13 @@ class VideoType extends AbstractType
             ->add('title')
             ->add('duration')
             ->add('release_date')
+            ->add('link')
+            ->add('type', ChoiceType::class, [
+                'choices' => [
+                    'premium' => 'premium',
+                    'free' => 'free'
+                ]
+            ])
         ;
     }
 

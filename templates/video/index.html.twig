@@ -6,7 +6,6 @@
     <h1>Video index</h1>
         {% for video in videos %}
             <a href="{{ path('app_video_show', {'id' : video.id}) }}">
-                <p>{{ video.title }}</p>
                 <p>{{ video.duration }}</p>
                 <p>{{ video.releaseDate ? video.releaseDate|date('Y-m-d') : '' }}</p>
                 <p>
@@ -18,5 +17,7 @@
                 <p>no records found</p>
         {% endfor %}
 
-    <a href="{{ path('app_video_new') }}">Create new</a>
+    {% if is_granted("ROLE_ADMIN") %}
+        <a href="{{ path('app_video_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

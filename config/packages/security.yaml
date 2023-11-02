@@ -39,7 +39,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_USER, ROLE_PREMIUM, ROLE_FREE, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_PREMIUM: [ROLE_USER, ROLE_FREE]
+        ROLE_USER: [ROLE_FREE]
 when@test:
     security:
         password_hashers:

@@ -23,6 +23,12 @@ class Video
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $release_date = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $type = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $link = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +66,30 @@ class Video
     public function setReleaseDate(?\DateTimeInterface $release_date): static
     {
         $this->release_date = $release_date;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(string $link): static
+    {
+        $this->link = $link;
 
         return $this;
     }
